@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — IndyPhilo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1520; line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    .site-header { border-bottom: 1px solid #e2dfe6; background: #fff; position: sticky; top: 0; z-index: 200; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; border-bottom: 1px solid #e2dfe6; }
+    .logo-name { font-family: Georgia, serif; font-size: 1.5rem; font-weight: 700; color: #1a1520; letter-spacing: -0.02em; }
+    .logo-name span { color: #7c5cbf; }
+    .logo-tagline { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6478; font-style: italic; }
+    .header-nav { display: flex; align-items: center; padding: 0 2rem; height: 40px; border-bottom: 1px solid #e2dfe6; }
+    .nav-item { position: relative; }
+    .nav-link { display: block; padding: 0 1rem; height: 40px; line-height: 40px; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: #6b6478; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.2s; }
+    .nav-link:hover, .nav-link.active { color: #7c5cbf; border-bottom-color: #7c5cbf; }
+    .dropdown { position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #e2dfe6; border-top: 2px solid #7c5cbf; min-width: 200px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity 0.2s, transform 0.2s; z-index: 300; }
+    .nav-item:hover .dropdown { opacity: 1; pointer-events: all; transform: none; }
+    .dropdown a { display: block; padding: 0.6rem 1.1rem; font-size: 0.83rem; color: #3d3647; border-bottom: 1px solid #f0eef0; }
+    .dropdown a:hover { background: #ede8f5; color: #5a3d96; }
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #7c5cbf; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: #e2dfe6; }
+    .page-header { padding: 2rem 0 1.5rem; border-bottom: 1px solid #e2dfe6; margin-bottom: 2rem; }
+    .page-header h1 { font-family: Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 0.4rem; }
+    .page-header p { font-size: 0.88rem; color: #6b6478; max-width: 520px; line-height: 1.7; }
+    .about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; padding-bottom: 3rem; align-items: start; }
+    @media (max-width: 800px) { .about-grid { grid-template-columns: 1fr; gap: 2rem; } }
+    .about-body p { font-size: 0.95rem; color: #3d3647; line-height: 1.85; margin-bottom: 1.1rem; }
+    .about-body h2 { font-family: Georgia, serif; font-size: 1.4rem; margin: 2rem 0 0.75rem; color: #1a1520; }
+    blockquote { border-left: 3px solid #7c5cbf; padding: 0.75rem 1.5rem; margin: 1.5rem 0; font-family: Georgia, serif; font-size: 1.05rem; font-style: italic; color: #1a1520; background: #ede8f5; }
+    .officers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .officer-card { border: 1px solid #e2dfe6; border-radius: 3px; padding: 1.3rem; background: #fff; transition: box-shadow 0.2s; }
+    .officer-card:hover { box-shadow: 0 4px 16px rgba(124,92,191,0.1); }
+    .officer-avatar { width: 48px; height: 48px; border-radius: 50%; background: #ede8f5; border: 2px solid #c4b5e8; display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 1.1rem; color: #7c5cbf; margin-bottom: 0.65rem; }
+    .officer-name { font-family: Georgia, serif; font-size: 1rem; margin-bottom: 0.15rem; }
+    .officer-role { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c5cbf; }
+    .officer-bio { font-size: 0.8rem; color: #6b6478; margin-top: 0.4rem; line-height: 1.55; }
+    .project-card { border: 1px solid #e2dfe6; border-radius: 3px; padding: 1.2rem 1.4rem; margin-bottom: 0.75rem; transition: box-shadow 0.2s; }
+    .project-card:hover { box-shadow: 0 2px 12px rgba(124,92,191,0.1); }
+    .project-num { font-family: Georgia, serif; font-size: 0.72rem; font-style: italic; color: #7c5cbf; margin-bottom: 0.3rem; }
+    .project-card h3 { font-family: Georgia, serif; font-size: 1rem; margin-bottom: 0.35rem; }
+    .project-card p { font-size: 0.83rem; color: #6b6478; line-height: 1.6; }
+    .info-panel { border: 1px solid #e2dfe6; border-radius: 3px; overflow: hidden; position: sticky; top: 112px; }
+    .info-panel-head { background: #ede8f5; padding: 0.9rem 1.2rem; border-bottom: 1px solid #e2dfe6; }
+    .info-panel-head h3 { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #5a3d96; }
+    .info-row { padding: 0.7rem 1.2rem; border-bottom: 1px solid #f0eef0; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #b8b3c2; }
+    .info-value { font-size: 0.85rem; color: #1a1520; margin-top: 0.1rem; }
+    .join-btn { display: block; background: #7c5cbf; color: #fff; text-align: center; padding: 0.7rem 1rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; border-radius: 2px; margin-top: 1rem; transition: background 0.2s; }
+    .join-btn:hover { background: #5a3d96; }
+    footer { background: #f7f5f2; border-top: 1px solid #e2dfe6; padding: 2.5rem 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; }
+    .footer-brand-name { font-family: Georgia, serif; font-size: 1.15rem; }
+    .footer-brand-name span { color: #7c5cbf; }
+    .footer-sub { font-size: 0.73rem; color: #6b6478; margin-top: 0.2rem; }
+    .footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-links a { font-size: 0.78rem; color: #6b6478; }
+    .footer-links a:hover { color: #7c5cbf; }
+    .footer-copy { font-size: 0.7rem; color: #b8b3c2; align-self: flex-end; }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+    .why-item { border: 1px solid #e2dfe6; border-radius: 3px; padding: 0.9rem; }
+    .why-item .emoji { font-size: 1.3rem; margin-bottom: 0.35rem; }
+    .why-item strong { font-size: 0.83rem; display: block; margin-bottom: 0.2rem; }
+    .why-item p { font-size: 0.76rem; color: #6b6478; line-height: 1.55; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-top">
+    <a href="index.html" style="display:flex;flex-direction:column;">
+      <span class="logo-name">Indy<span>Philo</span></span>
+      <span class="logo-tagline">dare to think</span>
+    </a>
+  </div>
+  <nav class="header-nav">
+    <div class="nav-item"><a href="index.html" class="nav-link">Home</a></div>
+    <div class="nav-item"><a href="journal.html" class="nav-link">Journal</a></div>
+    <div class="nav-item"><a href="careers.html" class="nav-link">Careers</a></div>
+    <div class="nav-item"><a href="about.html" class="nav-link active">About</a></div>
+    <div class="nav-item"><a href="join.html" class="nav-link">Join</a></div>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="section-label">Who We Are</div>
+    <h1>IndyPhilo — <em>Dare to Think</em></h1>
+    <p>Independence High School's philosophy club. Non-curricular. Student-led. Open to everyone.</p>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-body">
+      <p>IndyPhilo was founded at Independence High School in Frisco, Texas by students who believe that philosophy isn't just an ancient academic discipline — it's the most practical tool a young person can develop.</p>
+      <p>We are <strong>highschoolers interested in the discipline of philosophy</strong>. We understand the multi-faceted nature of philosophy. We are wannabe philosophers striving to make philosophy applicable to all.</p>
+      <blockquote>"Philosophy is not a theory but an activity." — Ludwig Wittgenstein</blockquote>
+
+      <h2>Our Team</h2>
+      <div class="officers-grid">
+        <div class="officer-card"><div class="officer-avatar">MS</div><div class="officer-name">Mehek Saini</div><div class="officer-role">Co-Founder & Head</div><div class="officer-bio">Leads operations, communications, and strategic direction for IndyPhilo.</div></div>
+        <div class="officer-card"><div class="officer-avatar">VV</div><div class="officer-name">Vaibhav Vijayaraghavan</div><div class="officer-role">Co-Founder & Head</div><div class="officer-bio">Shapes the club's vision, curriculum, and external partnerships.</div></div>
+        <div class="officer-card"><div class="officer-avatar">NR</div><div class="officer-name">Nandan Ramaswamy</div><div class="officer-role">Head of Finance</div><div class="officer-bio">Leads IndyPhilo's finance track and career-field programming.</div></div>
+        <div class="officer-card"><div class="officer-avatar">AK</div><div class="officer-name">Aanya Kalakonda</div><div class="officer-role">Head of Law</div><div class="officer-bio">Leads the law and political philosophy track.</div></div>
+        <div class="officer-card"><div class="officer-avatar">AR</div><div class="officer-name">Anika Reddy</div><div class="officer-role">Head of Medicine</div><div class="officer-bio">Leads bioethics and medical philosophy programming.</div></div>
+      </div>
+
+      <h2>The Big Three Projects</h2>
+      <div class="project-card"><div class="project-num">01</div><h3>The IndyPhilo Journal</h3><p>A youth-led opinion and editorial platform. Members write about whatever they want connected to philosophy. Monthly posts are required to maintain membership.</p></div>
+      <div class="project-card"><div class="project-num">02</div><h3>The Psych Study</h3><p>A student-led experiment bridging philosophy and psychology — testing philosophical intuitions with real data. Potential for academic publication.</p></div>
+      <div class="project-card"><div class="project-num">03</div><h3>Public-Speaking Event</h3><p>Present your philosophical thinking in front of a real audience. We believe the ability to argue clearly is one of the most transferable skills a student can build.</p></div>
+
+      <h2>Partnership with JWAC</h2>
+      <p>Through our partnership with the <strong>Junior World Affairs Council</strong>, IndyPhilo members gain access to events featuring former government officials, intelligence community professionals, and global policy experts. Members can earn a Global Leadership Certificate and participate in civic service opportunities.</p>
+
+      <h2>Why Philosophy?</h2>
+      <div class="why-grid">
+        <div class="why-item"><div class="emoji">⚖️</div><strong>Law</strong><p>Theories of justice and moral reasoning are the backbone of legal argumentation.</p></div>
+        <div class="why-item"><div class="emoji">🏥</div><strong>Medicine</strong><p>Bioethics guides decisions no textbook can answer — consent, resource allocation, end of life.</p></div>
+        <div class="why-item"><div class="emoji">📈</div><strong>Finance</strong><p>Economic philosophy traces back to moral theory. Markets have moral foundations.</p></div>
+        <div class="why-item"><div class="emoji">🧠</div><strong>Psychology</strong><p>Philosophy of mind shapes our understanding of consciousness, behavior, and identity.</p></div>
+        <div class="why-item"><div class="emoji">💻</div><strong>Computer Science</strong><p>AI ethics, consciousness, and information philosophy are frontier questions right now.</p></div>
+        <div class="why-item"><div class="emoji">📰</div><strong>Journalism</strong><p>Media ethics, truth, and the epistemology of information are pressing philosophical debates.</p></div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="info-panel">
+        <div class="info-panel-head"><h3>Club Details</h3></div>
+        <div class="info-row"><div class="info-label">Name</div><div class="info-value">IndyPhilo</div></div>
+        <div class="info-row"><div class="info-label">School</div><div class="info-value">Independence High School</div></div>
+        <div class="info-row"><div class="info-label">District</div><div class="info-value">Frisco ISD</div></div>
+        <div class="info-row"><div class="info-label">Type</div><div class="info-value">Non-Curricular</div></div>
+        <div class="info-row"><div class="info-label">Staff Monitor</div><div class="info-value">Mrs. Anderson</div></div>
+        <div class="info-row"><div class="info-label">Location</div><div class="info-value">GT Humanities, Room A200</div></div>
+        <div class="info-row"><div class="info-label">Meets</div><div class="info-value">After school, 4:30–4:50 PM</div></div>
+        <div class="info-row"><div class="info-label">Year</div><div class="info-value">2025–2026</div></div>
+      </div>
+      <a href="join.html" class="join-btn">Join IndyPhilo →</a>
+    </aside>
+  </div>
+</div>
+
+<footer>
+  <div><div class="footer-brand-name">Indy<span>Philo</span></div><div class="footer-sub">Independence High School · Frisco, TX · 2025–2026</div></div>
+  <div class="footer-links"><a href="index.html">Home</a><a href="journal.html">Journal</a><a href="careers.html">Careers</a><a href="about.html">About</a><a href="join.html">Join</a></div>
+  <div class="footer-copy">© 2025–2026 IndyPhilo</div>
+</footer>
+</body>
+</html>

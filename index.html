@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IndyPhilo — Dare to Think</title>
+  <style>
+    /* ── RESET & VARS ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #ffffff; color: #1a1520; line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul, ol { list-style: none; }
+    img { max-width: 100%; display: block; }
+
+    :root {
+      --white:        #ffffff;
+      --off-white:    #f7f5f2;
+      --grey-light:   #f0eef0;
+      --grey:         #e2dfe6;
+      --grey-mid:     #b8b3c2;
+      --grey-dark:    #6b6478;
+      --ink:          #1a1520;
+      --ink-light:    #3d3647;
+      --purple-pale:  #ede8f5;
+      --purple-soft:  #c4b5e8;
+      --purple:       #7c5cbf;
+      --purple-dark:  #5a3d96;
+      --serif: Georgia, 'Times New Roman', serif;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      border-bottom: 1px solid #e2dfe6;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      border-bottom: 1px solid #e2dfe6;
+    }
+
+    .site-logo { display: flex; flex-direction: column; }
+    .logo-name { font-family: Georgia, serif; font-size: 1.5rem; font-weight: 700; color: #1a1520; letter-spacing: -0.02em; }
+    .logo-name span { color: #7c5cbf; }
+    .logo-tagline { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6478; font-style: italic; }
+
+    .header-search {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #e2dfe6;
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      background: #f7f5f2;
+    }
+    .header-search input { border: none; background: transparent; font-size: 0.82rem; width: 160px; outline: none; color: #1a1520; }
+    .header-search input::placeholder { color: #b8b3c2; }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      height: 40px;
+      gap: 0;
+      overflow-x: auto;
+      border-bottom: 1px solid #e2dfe6;
+    }
+
+    .nav-item { position: relative; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0 1rem;
+      height: 40px;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #6b6478;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .nav-link:hover, .nav-link.active { color: #7c5cbf; border-bottom-color: #7c5cbf; }
+
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #e2dfe6;
+      border-top: 2px solid #7c5cbf;
+      min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 300;
+    }
+    .nav-item:hover .dropdown { opacity: 1; pointer-events: all; transform: none; }
+    .dropdown a {
+      display: block;
+      padding: 0.6rem 1.1rem;
+      font-size: 0.83rem;
+      color: #3d3647;
+      border-bottom: 1px solid #f0eef0;
+      transition: background 0.15s;
+    }
+    .dropdown a:last-child { border-bottom: none; }
+    .dropdown a:hover { background: #ede8f5; color: #5a3d96; }
+
+    /* ── LAYOUT ── */
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+    .home-layout {
+      display: flex;
+      gap: 2.5rem;
+      align-items: flex-start;
+      padding: 2rem 0 3rem;
+    }
+
+    .home-main { flex: 1; min-width: 0; }
+
+    .sidebar {
+      width: 250px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 112px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #7c5cbf;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: #e2dfe6; }
+
+    /* ── FEATURED POST ── */
+    .featured-post {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid #e2dfe6;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      transition: box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .featured-post:hover { box-shadow: 0 4px 20px rgba(124,92,191,0.13); }
+
+    .feat-img {
+      background: #ede8f5;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid #e2dfe6;
+      font-family: Georgia, serif;
+      font-size: 5rem;
+      color: #c4b5e8;
+      font-style: italic;
+    }
+
+    .feat-body {
+      padding: 2rem 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .feat-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #7c5cbf;
+      margin-bottom: 0.6rem;
+    }
+
+    .feat-body h2 {
+      font-family: Georgia, serif;
+      font-size: 1.6rem;
+      line-height: 1.25;
+      margin-bottom: 0.6rem;
+      color: #1a1520;
+    }
+
+    .feat-body .desc {
+      font-size: 0.88rem;
+      color: #6b6478;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    .feat-body .byline {
+      font-size: 0.78rem;
+      color: #6b6478;
+      font-style: italic;
+    }
+
+    .read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #7c5cbf;
+      margin-top: 0.9rem;
+      border-bottom: 1px solid #c4b5e8;
+      padding-bottom: 1px;
+      width: fit-content;
+    }
+    .read-more:hover { color: #5a3d96; }
+
+    /* ── TAG ── */
+    .tag {
+      display: inline-block;
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.5rem;
+      border: 1px solid #c4b5e8;
+      border-radius: 2px;
+      color: #5a3d96;
+      background: #ede8f5;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tag:hover, .tag.active { background: #7c5cbf; color: #fff; border-color: #7c5cbf; }
+
+    .read-time { font-size: 0.68rem; color: #b8b3c2; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e2dfe6;
+      margin-bottom: 1.5rem;
+    }
+    .filter-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6b6478; margin-right: 0.2rem; }
+
+    /* ── MASONRY GRID ── */
+    .masonry { columns: 3; column-gap: 1.5rem; }
+    @media (max-width: 960px) { .masonry { columns: 2; } }
+    @media (max-width: 580px) { .masonry { columns: 1; } }
+
+    /* ── POST CARD ── */
+    .post-card {
+      background: #fff;
+      border: 1px solid #e2dfe6;
+      border-radius: 3px;
+      overflow: hidden;
+      break-inside: avoid;
+      margin-bottom: 1.5rem;
+      display: block;
+      transition: box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .post-card:hover { box-shadow: 0 4px 18px rgba(124,92,191,0.12); }
+
+    .card-img-placeholder {
+      height: 140px;
+      background: #ede8f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+      font-size: 3rem;
+      color: #c4b5e8;
+      font-style: italic;
+      border-bottom: 1px solid #e2dfe6;
+    }
+
+    .card-body { padding: 1rem 1.1rem; }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .card-body h3 {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #1a1520;
+      margin-bottom: 0.35rem;
+    }
+    .card-body h3:hover { color: #7c5cbf; }
+
+    .card-desc { font-size: 0.83rem; color: #6b6478; line-height: 1.6; margin-bottom: 0.5rem; }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.4rem;
+      font-size: 0.73rem;
+      color: #b8b3c2;
+    }
+
+    .card-author { font-style: italic; color: #6b6478; }
+
+    /* ── SIDEBAR BOX ── */
+    .sidebar-box {
+      border: 1px solid #e2dfe6;
+      border-radius: 3px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 1.25rem;
+      background: #fff;
+    }
+    .sidebar-box h3 {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #7c5cbf;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid #e2dfe6;
+    }
+
+    .join-btn {
+      display: block;
+      background: #7c5cbf;
+      color: #fff;
+      text-align: center;
+      padding: 0.7rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      margin-bottom: 1.25rem;
+      transition: background 0.2s;
+    }
+    .join-btn:hover { background: #5a3d96; }
+
+    /* ── TRENDING ── */
+    .trending-item {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0eef0;
+      cursor: pointer;
+    }
+    .trending-item:last-child { border-bottom: none; }
+    .trending-num { font-family: Georgia, serif; font-size: 1.4rem; color: #e2dfe6; line-height: 1; font-style: italic; min-width: 24px; }
+    .trending-item h4 { font-size: 0.84rem; font-weight: 600; line-height: 1.3; color: #1a1520; transition: color 0.15s; }
+    .trending-item:hover h4 { color: #7c5cbf; }
+    .trending-author { font-size: 0.71rem; color: #6b6478; font-style: italic; margin-top: 0.15rem; }
+
+    /* ── CAREER PILLS ── */
+    .careers-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
+    .career-pill {
+      font-size: 0.71rem;
+      padding: 0.35rem 0.4rem;
+      border: 1px solid #e2dfe6;
+      border-radius: 2px;
+      color: #6b6478;
+      text-align: center;
+      transition: all 0.15s;
+      display: block;
+    }
+    .career-pill:hover { border-color: #c4b5e8; background: #ede8f5; color: #5a3d96; }
+
+    .about-blurb { font-size: 0.82rem; color: #6b6478; line-height: 1.65; }
+    .about-blurb strong { color: #1a1520; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #f7f5f2;
+      border-top: 1px solid #e2dfe6;
+      padding: 2.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .footer-brand-name { font-family: Georgia, serif; font-size: 1.15rem; color: #1a1520; }
+    .footer-brand-name span { color: #7c5cbf; }
+    .footer-sub { font-size: 0.73rem; color: #6b6478; margin-top: 0.2rem; }
+    .footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-links a { font-size: 0.78rem; color: #6b6478; }
+    .footer-links a:hover { color: #7c5cbf; }
+    .footer-copy { font-size: 0.7rem; color: #b8b3c2; align-self: flex-end; }
+
+    /* ── NO RESULTS ── */
+    .no-results { text-align: center; padding: 3rem 0; color: #b8b3c2; font-style: italic; }
+    .hidden { display: none !important; }
+
+    /* ── MOBILE ── */
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; cursor: pointer; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: #1a1520; }
+    .mobile-menu { display: none; flex-direction: column; background: #fff; border-bottom: 1px solid #e2dfe6; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { padding: 0.8rem 2rem; font-size: 0.88rem; border-bottom: 1px solid #f0eef0; }
+    .mobile-menu a:hover { background: #ede8f5; color: #7c5cbf; }
+
+    @media (max-width: 700px) {
+      .hamburger { display: flex; }
+      .header-nav, .header-search { display: none; }
+      .featured-post { grid-template-columns: 1fr; }
+      .feat-img { min-height: 160px; }
+      .home-layout { flex-direction: column; }
+      .sidebar { width: 100%; position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="header-top">
+    <a href="index.html" class="site-logo">
+      <span class="logo-name">Indy<span>Philo</span></span>
+      <span class="logo-tagline">dare to think</span>
+    </a>
+    <div class="header-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#b8b3c2" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search posts…" oninput="handleSearch(this.value)" />
+    </div>
+    <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="header-nav">
+    <div class="nav-item">
+      <a href="index.html" class="nav-link active">Home</a>
+    </div>
+    <div class="nav-item">
+      <a href="journal.html" class="nav-link">Journal ▾</a>
+      <div class="dropdown">
+        <a href="journal.html">📖 All Posts</a>
+        <a href="journal.html?career=medicine">🏥 Medicine</a>
+        <a href="journal.html?career=law">⚖️ Law</a>
+        <a href="journal.html?career=finance">📈 Finance</a>
+        <a href="journal.html?career=psychology">🧠 Psychology</a>
+        <a href="journal.html?career=computer-science">💻 Computer Science</a>
+        <a href="journal.html?career=engineering">⚙️ Engineering</a>
+        <a href="journal.html?career=general">🔍 General</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="careers.html" class="nav-link">Careers ▾</a>
+      <div class="dropdown">
+        <a href="careers.html#medicine">🏥 Medicine</a>
+        <a href="careers.html#law">⚖️ Law</a>
+        <a href="careers.html#finance">📈 Finance</a>
+        <a href="careers.html#psychology">🧠 Psychology</a>
+        <a href="careers.html#computer-science">💻 Computer Science</a>
+        <a href="careers.html#engineering">⚙️ Engineering</a>
+        <a href="careers.html#general">🔍 General</a>
+      </div>
+    </div>
+    <div class="nav-item"><a href="about.html" class="nav-link">About</a></div>
+    <div class="nav-item"><a href="join.html" class="nav-link">Join</a></div>
+  </nav>
+
+  <div class="mobile-menu" id="mob">
+    <a href="index.html">Home</a>
+    <a href="journal.html">Journal</a>
+    <a href="careers.html">Careers</a>
+    <a href="about.html">About</a>
+    <a href="join.html">Join</a>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<div class="page-wrap">
+  <div class="home-layout">
+
+    <!-- Main column -->
+    <main class="home-main">
+
+      <!-- Featured -->
+      <div class="section-label">Featured</div>
+      <div class="featured-post" onclick="location.href='post.html?id=what-is-philosophy'">
+        <div class="feat-img">¶</div>
+        <div class="feat-body">
+          <div class="feat-label">★ Featured Post</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+            <span class="tag">General</span>
+            <span class="read-time">4 min read</span>
+          </div>
+          <h2>What Is Philosophy — And Why Should You Care?</h2>
+          <p class="desc">Philosophy isn't a dusty relic locked in a library. It's the framework behind every career, every decision, every argument you'll ever make.</p>
+          <p class="byline">Vaibhav Vijayaraghavan · January 22, 2026</p>
+          <span class="read-more">Read more →</span>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar" id="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <span class="tag active" data-id="all" onclick="filterPosts('all')">All</span>
+        <span class="tag" data-id="medicine" onclick="filterPosts('medicine')">Medicine</span>
+        <span class="tag" data-id="law" onclick="filterPosts('law')">Law</span>
+        <span class="tag" data-id="finance" onclick="filterPosts('finance')">Finance</span>
+        <span class="tag" data-id="psychology" onclick="filterPosts('psychology')">Psychology</span>
+        <span class="tag" data-id="computer-science" onclick="filterPosts('computer-science')">Computer Science</span>
+        <span class="tag" data-id="general" onclick="filterPosts('general')">General</span>
+      </div>
+
+      <!-- Masonry grid -->
+      <div class="masonry" id="grid">
+
+        <div class="post-card" data-tag="medicine" onclick="location.href='post.html?id=philosophy-in-medicine'">
+          <div class="card-img-placeholder">🏥</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">Medicine</span>
+              <span class="read-time">5 min</span>
+            </div>
+            <h3>The Ethical Dilemmas Every Doctor Faces</h3>
+            <p class="card-desc">Medical school teaches you how to heal. Philosophy teaches you how to decide who gets healed, when, and at what cost.</p>
+            <div class="card-footer">
+              <span class="card-author">Anika Reddy</span>
+              <span>Jan 28, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card" data-tag="law" onclick="location.href='post.html?id=philosophy-in-law'">
+          <div class="card-img-placeholder">⚖️</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">Law</span>
+              <span class="read-time">6 min</span>
+            </div>
+            <h3>Is Justice Real, or Just a Word We Agree On?</h3>
+            <p class="card-desc">The law is built on the concept of justice — but what is justice, exactly? Three philosophers have three very different answers.</p>
+            <div class="card-footer">
+              <span class="card-author">Aanya Kalakonda</span>
+              <span>Feb 3, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card" data-tag="finance" onclick="location.href='post.html?id=philosophy-in-finance'">
+          <div class="card-img-placeholder">📈</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">Finance</span>
+              <span class="read-time">5 min</span>
+            </div>
+            <h3>The Ethics of Money: Do Markets Have Morals?</h3>
+            <p class="card-desc">Every financial decision you'll ever make has an ethical dimension. Here's why economists and philosophers need to talk more.</p>
+            <div class="card-footer">
+              <span class="card-author">Nandan Ramaswamy</span>
+              <span>Feb 10, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card" data-tag="psychology" onclick="location.href='post.html?id=psych-study'">
+          <div class="card-img-placeholder">🧠</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">Psychology</span>
+              <span class="read-time">3 min</span>
+            </div>
+            <h3>IndyPhilo's Psych Study: Where Philosophy Meets Experiment</h3>
+            <p class="card-desc">We're conducting a student-led psychological study that bridges philosophical inquiry with the scientific method.</p>
+            <div class="card-footer">
+              <span class="card-author">Mehek Saini</span>
+              <span>Feb 5, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card" data-tag="general" onclick="location.href='post.html?id=dare-to-think'">
+          <div class="card-img-placeholder" style="font-size:2.5rem;letter-spacing:0.05em;color:#c4b5e8;">✦</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">General</span>
+              <span class="read-time">4 min</span>
+            </div>
+            <h3>Dare to Think: On Intellectual Courage</h3>
+            <p class="card-desc">The IndyPhilo motto isn't just a tagline. Intellectual courage — the willingness to follow an argument wherever it leads — is the rarest skill you can develop.</p>
+            <div class="card-footer">
+              <span class="card-author">Mehek Saini</span>
+              <span>Jan 15, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card" data-tag="computer-science" onclick="location.href='post.html?id=philosophy-cs'">
+          <div class="card-img-placeholder">💻</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">Computer Science</span>
+              <span class="read-time">6 min</span>
+            </div>
+            <h3>Can a Machine Think? Philosophy at the Edge of AI</h3>
+            <p class="card-desc">Alan Turing's famous question launched modern AI. But the deepest questions about machine intelligence are still purely philosophical.</p>
+            <div class="card-footer">
+              <span class="card-author">Vaibhav Vijayaraghavan</span>
+              <span>Feb 15, 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card" data-tag="general" onclick="location.href='post.html?id=jwac'">
+          <div class="card-img-placeholder">🌐</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="tag">General</span>
+              <span class="read-time">3 min</span>
+            </div>
+            <h3>IndyPhilo × JWAC: A Partnership Worth Your Attention</h3>
+            <p class="card-desc">Through our partnership with the Junior World Affairs Council, members gain access to events with former government officials and global leaders.</p>
+            <div class="card-footer">
+              <span class="card-author">Vaibhav Vijayaraghavan</span>
+              <span>Feb 12, 2026</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="no-results hidden" id="no-results">No posts in this topic yet.</div>
+
+    </main>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+
+      <a href="join.html" class="join-btn">✦ Join IndyPhilo</a>
+
+      <div class="sidebar-box">
+        <h3>Trending</h3>
+        <div class="trending-item" onclick="location.href='post.html?id=philosophy-in-law'">
+          <div class="trending-num">1.</div>
+          <div>
+            <h4>Is Justice Real, or Just a Word We Agree On?</h4>
+            <div class="trending-author">Aanya Kalakonda</div>
+          </div>
+        </div>
+        <div class="trending-item" onclick="location.href='post.html?id=philosophy-in-medicine'">
+          <div class="trending-num">2.</div>
+          <div>
+            <h4>The Ethical Dilemmas Every Doctor Faces</h4>
+            <div class="trending-author">Anika Reddy</div>
+          </div>
+        </div>
+        <div class="trending-item" onclick="location.href='post.html?id=what-is-philosophy'">
+          <div class="trending-num">3.</div>
+          <div>
+            <h4>What Is Philosophy — And Why Should You Care?</h4>
+            <div class="trending-author">Vaibhav Vijayaraghavan</div>
+          </div>
+        </div>
+        <div class="trending-item" onclick="location.href='post.html?id=dare-to-think'">
+          <div class="trending-num">4.</div>
+          <div>
+            <h4>Dare to Think: On Intellectual Courage</h4>
+            <div class="trending-author">Mehek Saini</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-box">
+        <h3>About</h3>
+        <p class="about-blurb"><strong>IndyPhilo</strong> is Independence High School's philosophy club — a community for students who believe that thinking carefully about the world is the most valuable skill you can build.</p>
+        <a href="about.html" style="font-size:0.78rem;color:#7c5cbf;font-weight:600;display:inline-block;margin-top:0.75rem;border-bottom:1px solid #c4b5e8;">Learn more →</a>
+      </div>
+
+      <div class="sidebar-box">
+        <h3>Topics</h3>
+        <div class="careers-mini">
+          <a href="journal.html?career=medicine" class="career-pill">🏥 Medicine</a>
+          <a href="journal.html?career=law" class="career-pill">⚖️ Law</a>
+          <a href="journal.html?career=finance" class="career-pill">📈 Finance</a>
+          <a href="journal.html?career=psychology" class="career-pill">🧠 Psychology</a>
+          <a href="journal.html?career=computer-science" class="career-pill">💻 CS</a>
+          <a href="journal.html?career=general" class="career-pill">🔍 General</a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div>
+    <div class="footer-brand-name">Indy<span>Philo</span></div>
+    <div class="footer-sub">Independence High School · Frisco, TX · 2025–2026</div>
+  </div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="journal.html">Journal</a>
+    <a href="careers.html">Careers</a>
+    <a href="about.html">About</a>
+    <a href="join.html">Join</a>
+  </div>
+  <div>
+    <div style="font-size:0.75rem;color:#6b6478;">Non-Curricular Club · Frisco ISD</div>
+    <div style="font-size:0.72rem;color:#b8b3c2;margin-top:0.2rem;">Staff Monitor: Mrs. Anderson</div>
+  </div>
+  <div class="footer-copy">© 2025–2026 IndyPhilo</div>
+</footer>
+
+<script>
+  function filterPosts(tagId) {
+    document.querySelectorAll('#filter-bar .tag').forEach(t => {
+      t.classList.toggle('active', t.dataset.id === tagId);
+    });
+    let count = 0;
+    document.querySelectorAll('#grid .post-card').forEach(card => {
+      const match = tagId === 'all' || card.dataset.tag === tagId;
+      card.style.display = match ? '' : 'none';
+      if (match) count++;
+    });
+    document.getElementById('no-results').classList.toggle('hidden', count > 0);
+  }
+
+  function handleSearch(q) {
+    q = q.toLowerCase().trim();
+    let count = 0;
+    document.querySelectorAll('#grid .post-card').forEach(card => {
+      const match = !q || card.innerText.toLowerCase().includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) count++;
+    });
+    document.getElementById('no-results').classList.toggle('hidden', count > 0);
+  }
+</script>
+
+</body>
+</html>

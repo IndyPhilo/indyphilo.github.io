@@ -8,20 +8,6 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #f2f0eb; color: #1a1520; line-height: 1.6; }
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
-    .site-header { background: #fff; border-bottom: 1px solid #e0dbd4; position: sticky; top: 0; z-index: 200; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
-    .header-top { display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 58px; border-bottom: 1px solid #e0dbd4; }
-    .logo-name { font-family: Georgia, serif; font-size: 1.55rem; font-weight: 700; color: #1a1520; letter-spacing: -0.02em; }
-    .logo-name span { color: #7c5cbf; }
-    .logo-tagline { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: #a09898; font-style: italic; }
-    .header-nav { display: flex; padding: 0 2rem; height: 42px; align-items: center; overflow-x: auto; }
-    .nav-item { position: relative; height: 42px; display: flex; align-items: center; }
-    .nav-link { display: flex; align-items: center; gap: 0.2rem; padding: 0 1rem; height: 42px; font-size: 0.75rem; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600; color: #6b6478; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.18s, border-color 0.18s; }
-    .nav-link:hover, .nav-link.active { color: #7c5cbf; border-bottom-color: #e8b84b; }
-    .dropdown { position: absolute; top: 42px; left: 0; background: #fff; border: 1px solid #e0dbd4; border-top: 3px solid #e8b84b; min-width: 210px; box-shadow: 0 8px 28px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity 0.18s, transform 0.18s; z-index: 300; }
-    .nav-item:hover > .dropdown { opacity: 1; pointer-events: all; transform: none; }
-    .dropdown a { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.1rem; font-size: 0.83rem; color: #3d3647; border-bottom: 1px solid #f5f0ea; transition: background 0.12s; }
-    .dropdown a:last-child { border-bottom: none; }
-    .dropdown a:hover { background: #fffbf0; color: #5a3d96; }
 
     .page-wrap { max-width: 1220px; margin: 0 auto; padding: 0 2rem; }
     .section-label { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #7c5cbf; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -31,7 +17,7 @@
     .page-header h1 { font-family: Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.4rem; }
     .page-header p { font-size: 0.88rem; color: #6b6478; max-width: 520px; line-height: 1.7; }
 
-    /* KEY FIX: about-grid uses align-items: start so sidebar doesn't stretch */
+    /* No sticky on aside = no overlap bug */
     .about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 3.5rem; padding-bottom: 3rem; align-items: start; }
     @media (max-width: 820px) { .about-grid { grid-template-columns: 1fr; gap: 2rem; } }
 
@@ -53,7 +39,6 @@
     .project-card h3 { font-family: Georgia, serif; font-size: 0.98rem; margin-bottom: 0.33rem; }
     .project-card p { font-size: 0.82rem; color: #6b6478; line-height: 1.6; }
 
-    /* SIDEBAR — no sticky, just top-aligned */
     .info-panel { border: 1px solid #e0dbd4; border-radius: 3px; overflow: hidden; background: #fff; }
     .info-panel-head { background: #e8b84b; padding: 0.85rem 1.2rem; border-bottom: 1px solid #d4a83c; }
     .info-panel-head h3 { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #1a1520; }
@@ -75,7 +60,7 @@
     @media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
     .footer-brand { font-family: Georgia, serif; font-size: 1.3rem; color: #fff; }
     .footer-brand span { color: #e8b84b; }
-    .footer-tagline { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: #6b5f78; font-style: italic; margin-top: 0.1rem; }
+    .footer-tagline { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: #6b5f78; font-style: italic; }
     .footer-info { font-size: 0.77rem; color: #6b5f78; line-height: 1.75; margin-top: 0.75rem; }
     .footer-col h4 { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #e8b84b; margin-bottom: 0.7rem; }
     .footer-links { display: flex; flex-direction: column; gap: 0.38rem; }
@@ -83,65 +68,117 @@
     .footer-links a:hover { color: #fff; }
     .footer-contact { font-size: 0.79rem; color: #9a8faa; line-height: 1.75; }
     .footer-contact a { color: #c4b5e8; }
-    .footer-contact a:hover { color: #fff; }
     .remind-box { background: #251e30; border: 1px solid #3a3047; border-radius: 3px; padding: 0.85rem 1rem; margin-top: 0.6rem; }
     .remind-box p { font-size: 0.74rem; color: #9a8faa; margin-bottom: 0.25rem; }
-    .remind-code { font-size: 1.05rem; font-weight: 800; color: #e8b84b; letter-spacing: 0.05em; }
+    .remind-code { font-size: 1.05rem; font-weight: 800; color: #e8b84b; }
     .remind-link { display: inline-block; margin-top: 0.4rem; font-size: 0.71rem; color: #c4b5e8; }
     .remind-link:hover { color: #fff; text-decoration: underline; }
     .footer-bottom { max-width: 1220px; margin: 0 auto; border-top: 1px solid #2a2030; padding: 1rem 0; font-size: 0.67rem; color: #4a4055; display: flex; justify-content: space-between; }
+
+    /* ── SINGLE-ROW HEADER ── */
+    .site-header { background: #fff; border-bottom: 1px solid #e0dbd4; position: sticky; top: 0; z-index: 500; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 62px; max-width: 1320px; margin: 0 auto; }
+    .logo-wrap { display: flex; flex-direction: column; line-height: 1; flex-shrink: 0; }
+    .logo-name { font-family: Georgia, serif; font-size: 1.45rem; font-weight: 700; color: #1a1520; letter-spacing: -0.02em; }
+    .logo-name span { color: #7c5cbf; }
+    .logo-tagline { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: #b0a8ba; font-style: italic; margin-top: 1px; }
+    .header-nav { display: flex; align-items: center; gap: 0; height: 62px; }
+    .nav-item { position: relative; height: 62px; display: flex; align-items: center; }
+    .nav-link { display: flex; align-items: center; gap: 0.25rem; padding: 0 1rem; height: 62px; font-size: 0.78rem; letter-spacing: 0.05em; font-weight: 500; color: #4a4055; white-space: nowrap; transition: color 0.15s; cursor: pointer; border-bottom: 2px solid transparent; }
+    .nav-link:hover, .nav-link.active { color: #7c5cbf; border-bottom-color: #e8b84b; }
+    .nav-link .caret { font-size: 0.55rem; opacity: 0.6; margin-left: 1px; transition: transform 0.15s; }
+    .nav-item:hover .caret { transform: rotate(180deg); }
+    .dropdown { position: absolute; top: calc(100% + 1px); left: 0; background: #fff; border-radius: 6px; border: 1px solid #e0dbd4; box-shadow: 0 8px 28px rgba(0,0,0,0.12); min-width: 200px; opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity 0.15s, transform 0.15s; z-index: 600; overflow: hidden; }
+    .nav-item:hover > .dropdown { opacity: 1; pointer-events: all; transform: none; }
+    .dropdown a { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1.1rem; font-size: 0.83rem; color: #3d3647; border-bottom: 1px solid #f5f0ea; transition: background 0.1s, color 0.1s; }
+    .dropdown a:last-child { border-bottom: none; }
+    .dropdown a:hover { background: #7c5cbf; color: #fff; }
+    .nav-submit { background: #7c5cbf; color: #fff !important; border-radius: 4px; padding: 0.45rem 1.1rem !important; height: auto !important; border-bottom: none !important; font-weight: 600 !important; margin-left: 0.5rem; transition: background 0.15s !important; }
+    .nav-submit:hover { background: #5a3d96 !important; color: #fff !important; border-bottom: none !important; }
+    .header-search { display: flex; align-items: center; gap: 0.4rem; border: 1px solid #e0dbd4; border-radius: 18px; padding: 0.28rem 0.8rem; background: #f7f5f2; margin-right: 0.25rem; }
+    .header-search input { border: none; background: transparent; font-size: 0.8rem; width: 130px; outline: none; color: #1a1520; }
+    .header-search input::placeholder { color: #b8b3c2; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; cursor: pointer; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: #1a1520; }
+    .mobile-menu { display: none; flex-direction: column; background: #fff; border-bottom: 1px solid #e0dbd4; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { padding: 0.75rem 2rem; font-size: 0.88rem; border-bottom: 1px solid #f5f0ea; color: #1a1520; }
+    .mobile-menu a.sub { padding-left: 3rem; font-size: 0.82rem; color: #6b6478; }
+    .mobile-menu a:hover { background: #fffbf0; }
+    @media (max-width: 820px) { .hamburger { display: flex; } .header-nav, .header-search { display: none; } }
   </style>
 </head>
 <body>
 <header class="site-header">
-  <div class="header-top">
-    <a href="index.html" style="display:flex;flex-direction:column;">
+  <div class="header-inner">
+    <a href="/" class="logo-wrap">
       <span class="logo-name">Indy<span>Philo</span></span>
       <span class="logo-tagline">dare to think</span>
     </a>
+    <nav class="header-nav">
+      <div class="nav-item"><a href="/" class="nav-link ">Home</a></div>
+      <div class="nav-item">
+        <a href="/journal/" class="nav-link ">Journal <span class="caret">▼</span></a>
+        <div class="dropdown">
+          <a href="/journal/">📖 All Posts</a>
+          <a href="/journal/?career=medicine">🏥 Medicine</a>
+          <a href="/journal/?career=law">⚖️ Law</a>
+          <a href="/journal/?career=finance">📈 Finance</a>
+          <a href="/journal/?career=psychology">🧠 Psychology</a>
+          <a href="/journal/?career=computer-science">💻 Computer Science</a>
+          <a href="/journal/?career=general">🔍 General</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="/careers/" class="nav-link ">Careers <span class="caret">▼</span></a>
+        <div class="dropdown">
+          <a href="/careers/#medicine">🏥 Medicine</a>
+          <a href="/careers/#law">⚖️ Law</a>
+          <a href="/careers/#finance">📈 Finance</a>
+          <a href="/careers/#psychology">🧠 Psychology</a>
+          <a href="/careers/#computer-science">💻 Computer Science</a>
+          <a href="/careers/#general">🔍 General</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="/about/" class="nav-link active">About</a></div>
+      <div class="nav-item"><a href="/join/" class="nav-link ">Join</a></div>
+      
+    <div class="header-search">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#b8b3c2" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search..." oninput="typeof handleSearch!=='undefined'&&handleSearch(this.value)" />
+    </div>
+      <div class="nav-item"><a href="/submit/" class="nav-link nav-submit">✦ Submit a Post</a></div>
+    </nav>
+    <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')"><span></span><span></span><span></span></button>
   </div>
-  <nav class="header-nav">
-    <div class="nav-item"><a href="index.html" class="nav-link">Home</a></div>
-    <div class="nav-item">
-      <a href="journal.html" class="nav-link">Journal ▾</a>
-      <div class="dropdown">
-        <a href="journal.html">📖 All Posts</a>
-        <a href="journal.html?career=medicine">🏥 Medicine</a>
-        <a href="journal.html?career=law">⚖️ Law</a>
-        <a href="journal.html?career=finance">📈 Finance</a>
-        <a href="journal.html?career=psychology">🧠 Psychology</a>
-        <a href="journal.html?career=computer-science">💻 Computer Science</a>
-        <a href="journal.html?career=general">🔍 General</a>
-      </div>
-    </div>
-    <div class="nav-item">
-      <a href="careers.html" class="nav-link">Careers ▾</a>
-      <div class="dropdown">
-        <a href="careers.html#medicine">🏥 Medicine</a>
-        <a href="careers.html#law">⚖️ Law</a>
-        <a href="careers.html#finance">📈 Finance</a>
-        <a href="careers.html#psychology">🧠 Psychology</a>
-        <a href="careers.html#computer-science">💻 Computer Science</a>
-        <a href="careers.html#general">🔍 General</a>
-      </div>
-    </div>
-    <div class="nav-item"><a href="about.html" class="nav-link active">About</a></div>
-    <div class="nav-item"><a href="join.html" class="nav-link">Join</a></div>
-  </nav>
+  <div class="mobile-menu" id="mob">
+    <a href="/">Home</a>
+    <a href="/journal/">Journal</a>
+    <a href="/journal/?career=medicine" class="sub">🏥 Medicine</a>
+    <a href="/journal/?career=law" class="sub">⚖️ Law</a>
+    <a href="/journal/?career=finance" class="sub">📈 Finance</a>
+    <a href="/journal/?career=psychology" class="sub">🧠 Psychology</a>
+    <a href="/journal/?career=computer-science" class="sub">💻 CS</a>
+    <a href="/journal/?career=general" class="sub">🔍 General</a>
+    <a href="/careers/">Careers</a>
+    <a href="/about/">About</a>
+    <a href="/join/">Join</a>
+    <a href="/submit/">Submit a Post</a>
+  </div>
 </header>
 
 <div class="page-wrap">
   <div class="page-header">
     <div class="section-label">Who We Are</div>
-    <h1>IndyPhilo — <em>Dare to Think</em></h1>
+    <h1>IndyPhilo: Dare to Think</h1>
     <p>Independence High School's philosophy club. Non-curricular. Student-led. Open to everyone.</p>
   </div>
 
   <div class="about-grid">
     <div class="about-body">
-      <p>IndyPhilo was founded at Independence High School in Frisco, Texas by students who believe that philosophy isn't just an ancient academic discipline — it's the most practical tool a young person can develop.</p>
-      <p>We are <strong>highschoolers interested in the discipline of philosophy</strong>. We understand the multi-faceted nature of philosophy. We are wannabe philosophers striving to make philosophy applicable to all.</p>
-      <blockquote>"Philosophy is not a theory but an activity." — Ludwig Wittgenstein</blockquote>
+      <p>IndyPhilo was founded at Independence High School in Frisco, Texas by students who believe that philosophy isn't just an ancient academic discipline. It's the most practical tool a young person can develop.</p>
+      <p>We are <strong>highschoolers interested in the discipline of philosophy</strong>. We understand the multi-faceted nature of philosophy and are striving to make it applicable to all.</p>
+      <blockquote>Philosophy is not a theory but an activity. — Ludwig Wittgenstein</blockquote>
 
       <h2>Our Team</h2>
       <div class="officers-grid">
@@ -154,7 +191,7 @@
 
       <h2>The Big Three Projects</h2>
       <div class="project-card"><div class="project-num">01</div><h3>The IndyPhilo Journal</h3><p>A youth-led opinion and editorial platform. Members write about whatever they want connected to philosophy. Monthly posts are required to maintain membership.</p></div>
-      <div class="project-card"><div class="project-num">02</div><h3>The Psych Study</h3><p>A student-led experiment bridging philosophy and psychology — testing philosophical intuitions with real data. Potential for academic publication.</p></div>
+      <div class="project-card"><div class="project-num">02</div><h3>The Psych Study</h3><p>A student-led experiment bridging philosophy and psychology, testing philosophical intuitions with real data. Potential for academic publication.</p></div>
       <div class="project-card"><div class="project-num">03</div><h3>Public-Speaking Event</h3><p>Present your philosophical thinking in front of a real audience. The ability to argue clearly is one of the most transferable skills a student can build.</p></div>
 
       <h2>Partnership with JWAC</h2>
@@ -163,7 +200,7 @@
       <h2>Why Philosophy?</h2>
       <div class="why-grid">
         <div class="why-item"><div class="why-emoji">⚖️</div><strong>Law</strong><p>Theories of justice and moral reasoning are the backbone of legal argumentation.</p></div>
-        <div class="why-item"><div class="why-emoji">🏥</div><strong>Medicine</strong><p>Bioethics guides decisions no textbook can answer — consent, resource allocation, end of life.</p></div>
+        <div class="why-item"><div class="why-emoji">🏥</div><strong>Medicine</strong><p>Bioethics guides decisions no textbook can answer: consent, resource allocation, end of life.</p></div>
         <div class="why-item"><div class="why-emoji">📈</div><strong>Finance</strong><p>Economic philosophy traces back to moral theory. Markets have moral foundations.</p></div>
         <div class="why-item"><div class="why-emoji">🧠</div><strong>Psychology</strong><p>Philosophy of mind shapes our understanding of consciousness, behavior, and identity.</p></div>
         <div class="why-item"><div class="why-emoji">💻</div><strong>Computer Science</strong><p>AI ethics, consciousness, and information philosophy are frontier questions right now.</p></div>
@@ -171,7 +208,7 @@
       </div>
     </div>
 
-    <!-- SIDEBAR: no sticky, just normal flow so it doesn't overlap on scroll -->
+    <!-- No sticky on sidebar = no overlap -->
     <aside>
       <div class="info-panel">
         <div class="info-panel-head"><h3>Club Details</h3></div>
@@ -181,40 +218,25 @@
         <div class="info-row"><div class="info-label">Type</div><div class="info-value">Non-Curricular</div></div>
         <div class="info-row"><div class="info-label">Staff Monitor</div><div class="info-value">Mrs. Anderson</div></div>
         <div class="info-row"><div class="info-label">Location</div><div class="info-value">GT Humanities, Room A200</div></div>
-        <div class="info-row"><div class="info-label">Meets</div><div class="info-value">After school, 4:30–4:50 PM</div></div>
-        <div class="info-row"><div class="info-label">Year</div><div class="info-value">2025–2026</div></div>
+        <div class="info-row"><div class="info-label">Meets</div><div class="info-value">After school, 4:30 to 4:50 PM</div></div>
+        <div class="info-row"><div class="info-label">Year</div><div class="info-value">2025-2026</div></div>
       </div>
-      <a href="join.html" class="join-btn">Join IndyPhilo →</a>
+      <a href="/join/" class="join-btn">Join IndyPhilo →</a>
     </aside>
   </div>
 </div>
 
 <footer>
   <div class="footer-grid">
-    <div>
-      <div class="footer-brand">Indy<span>Philo</span></div>
-      <div class="footer-tagline">dare to think</div>
-      <div class="footer-info">Independence High School<br>Frisco, TX · 2025–2026<br>Non-Curricular Club · Frisco ISD<br>Staff Monitor: Mrs. Anderson</div>
-    </div>
-    <div class="footer-col">
-      <h4>Navigate</h4>
-      <div class="footer-links"><a href="index.html">Home</a><a href="journal.html">Journal</a><a href="careers.html">Careers</a><a href="about.html">About</a><a href="join.html">Join</a></div>
-    </div>
-    <div class="footer-col">
-      <h4>Contact</h4>
-      <div class="footer-contact"><a href="mailto:IndyPhilo@gmail.com">IndyPhilo@gmail.com</a><br><br>Submit forms &amp; writings via Remind or Canvas to any officer.</div>
-    </div>
-    <div class="footer-col">
-      <h4>Join on Remind</h4>
-      <div class="remind-box">
-        <p>Text <strong style="color:#fff;">@indyphilo</strong> to</p>
-        <div class="remind-code">81010</div>
-        <p style="margin-top:0.5rem;">or visit:</p>
-        <a href="https://www.remind.com/join/indyphilo" target="_blank" class="remind-link">remind.com/join/indyphilo</a>
-      </div>
-    </div>
+    <div><div class="footer-brand">Indy<span>Philo</span></div><div class="footer-tagline">dare to think</div><div class="footer-info">Independence High School<br>Frisco, TX · 2025-2026<br>Non-Curricular Club · Frisco ISD<br>Staff Monitor: Mrs. Anderson</div></div>
+    <div class="footer-col"><h4>Navigate</h4><div class="footer-links"><a href="/">Home</a><a href="/journal/">Journal</a><a href="/careers/">Careers</a><a href="/about/">About</a><a href="/join/">Join</a><a href="/submit/">Submit a Post</a></div></div>
+    <div class="footer-col"><h4>Contact</h4><div class="footer-contact"><a href="mailto:IndyPhilo@gmail.com">IndyPhilo@gmail.com</a><br><br>Submit forms and writings via Remind or Canvas to any officer.</div></div>
+    <div class="footer-col"><h4>Join on Remind</h4><div class="remind-box"><p>Text <strong style="color:#fff;">@indyphilo</strong> to</p><div class="remind-code">81010</div><p style="margin-top:0.5rem;">or visit:</p><a href="https://www.remind.com/join/indyphilo" target="_blank" class="remind-link">remind.com/join/indyphilo</a></div></div>
   </div>
-  <div class="footer-bottom"><span>© 2025–2026 IndyPhilo · Independence High School · Frisco ISD</span><span>Room A200 · Mrs. Anderson</span></div>
+  <div class="footer-bottom"><span>© 2025-2026 IndyPhilo · Independence High School · Frisco ISD</span><span>Room A200 · Mrs. Anderson</span></div>
 </footer>
+
+<!-- Hidden officer link (white on white background, only visible if you know it's there) -->
+<a href="/officer/" style="color:#f2f0eb;font-size:0.5px;position:fixed;bottom:2px;right:4px;opacity:0.01;user-select:none;" tabindex="-1">·</a>
 </body>
 </html>

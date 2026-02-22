@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Officer Dashboard — IndyPhilo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #f2f0eb; color: #1a1520; line-height: 1.6; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+
+    /* LOGIN SCREEN */
+    #login-screen { position: fixed; inset: 0; background: #1a1520; display: flex; align-items: center; justify-content: center; z-index: 1000; flex-direction: column; }
+    .login-box { background: #fff; border-radius: 4px; padding: 2.5rem 2rem; width: 340px; border-top: 4px solid #e8b84b; text-align: center; }
+    .login-logo { font-family: Georgia, serif; font-size: 1.6rem; margin-bottom: 0.2rem; }
+    .login-logo span { color: #7c5cbf; }
+    .login-sub { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: #a09898; font-style: italic; margin-bottom: 1.75rem; }
+    .login-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6b6478; text-align: left; margin-bottom: 0.4rem; display: block; }
+    .login-input { width: 100%; border: 1px solid #e0dbd4; border-radius: 2px; padding: 0.65rem 0.9rem; font-size: 0.9rem; outline: none; transition: border-color 0.15s; margin-bottom: 0.75rem; }
+    .login-input:focus { border-color: #7c5cbf; }
+    .login-btn { width: 100%; background: #7c5cbf; color: #fff; border: none; padding: 0.75rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 2px; cursor: pointer; transition: background 0.2s; }
+    .login-btn:hover { background: #5a3d96; }
+    .login-error { color: #c0392b; font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+    /* DASHBOARD */
+    #dashboard { display: none; }
+    .dash-header { background: #1a1520; border-bottom: 3px solid #e8b84b; padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+    .dash-logo { font-family: Georgia, serif; font-size: 1.2rem; color: #fff; }
+    .dash-logo span { color: #e8b84b; }
+    .dash-badge { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #e8b84b; background: rgba(232,184,75,0.15); border: 1px solid rgba(232,184,75,0.3); padding: 0.2rem 0.6rem; border-radius: 10px; }
+    .logout-btn { font-size: 0.7rem; color: #9a8faa; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid #3a3047; padding: 0.3rem 0.75rem; border-radius: 2px; transition: color 0.15s; }
+    .logout-btn:hover { color: #fff; }
+
+    .dash-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .dash-grid { display: grid; grid-template-columns: 1fr 340px; gap: 2.5rem; align-items: start; }
+    @media (max-width: 800px) { .dash-grid { grid-template-columns: 1fr; } }
+
+    .dash-section-title { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #7c5cbf; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .dash-section-title::after { content: ''; flex: 1; height: 1px; background: #e0dbd4; }
+
+    /* PENDING QUEUE */
+    .queue-empty { background: #fff; border: 1px solid #e0dbd4; border-radius: 3px; padding: 2.5rem; text-align: center; color: #a09898; font-style: italic; }
+    .queue-item { background: #fff; border: 1px solid #e0dbd4; border-radius: 3px; padding: 1.25rem 1.4rem; margin-bottom: 1rem; }
+    .qi-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .qi-title { font-family: Georgia, serif; font-size: 1.05rem; color: #1a1520; line-height: 1.25; }
+    .qi-meta { font-size: 0.75rem; color: #a09898; font-style: italic; margin-top: 0.2rem; }
+    .qi-tag { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.18rem 0.5rem; border: 1px solid #c4b5e8; border-radius: 2px; color: #5a3d96; background: #ede8f5; flex-shrink: 0; }
+    .qi-desc { font-size: 0.84rem; color: #6b6478; line-height: 1.65; margin-bottom: 0.85rem; }
+    .qi-body { font-size: 0.82rem; color: #3d3647; line-height: 1.75; background: #f7f5f2; border: 1px solid #e0dbd4; border-radius: 2px; padding: 0.85rem 1rem; margin-bottom: 0.85rem; max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
+    .qi-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .qi-publish { background: #7c5cbf; color: #fff; border: none; padding: 0.5rem 1rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; cursor: pointer; transition: background 0.2s; }
+    .qi-publish:hover { background: #5a3d96; }
+    .qi-reject { background: #fff; color: #6b6478; border: 1px solid #e0dbd4; padding: 0.5rem 1rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+    .qi-reject:hover { border-color: #c0392b; color: #c0392b; }
+
+    /* PUBLISHED POSTS LIST */
+    .pub-item { background: #fff; border: 1px solid #e0dbd4; border-radius: 3px; padding: 0.9rem 1.1rem; margin-bottom: 0.7rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .pub-item-info { flex: 1; min-width: 0; }
+    .pub-item-title { font-family: Georgia, serif; font-size: 0.9rem; color: #1a1520; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pub-item-meta { font-size: 0.71rem; color: #a09898; margin-top: 0.1rem; }
+    .pub-item-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .btn-feature { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.7rem; border: 1px solid #e8b84b; border-radius: 2px; background: #fff; color: #c49a30; cursor: pointer; transition: all 0.15s; }
+    .btn-feature:hover, .btn-feature.is-featured { background: #e8b84b; color: #1a1520; border-color: #e8b84b; }
+    .btn-view { font-size: 0.68rem; color: #7c5cbf; border: 1px solid #c4b5e8; background: #fff; padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; transition: all 0.15s; font-weight: 600; }
+    .btn-view:hover { background: #ede8f5; }
+    .featured-star { color: #e8b84b; font-size: 0.9rem; }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .stat-box { background: #fff; border: 1px solid #e0dbd4; border-radius: 3px; padding: 0.9rem 1rem; text-align: center; }
+    .stat-num { font-family: Georgia, serif; font-size: 1.8rem; color: #7c5cbf; font-style: italic; line-height: 1; }
+    .stat-label { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #a09898; margin-top: 0.2rem; }
+
+    /* FEATURED CONTROL */
+    .featured-control { background: #fff; border: 1px solid #e0dbd4; border-radius: 3px; padding: 1rem 1.1rem; margin-bottom: 1.25rem; }
+    .featured-control h3 { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #7c5cbf; margin-bottom: 0.65rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0dbd4; }
+    .featured-control p { font-size: 0.8rem; color: #6b6478; margin-bottom: 0.6rem; }
+    .featured-control strong { color: #1a1520; }
+
+    /* ── SINGLE-ROW HEADER ── */
+    .site-header { background: #fff; border-bottom: 1px solid #e0dbd4; position: sticky; top: 0; z-index: 500; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 62px; max-width: 1320px; margin: 0 auto; }
+    .logo-wrap { display: flex; flex-direction: column; line-height: 1; flex-shrink: 0; }
+    .logo-name { font-family: Georgia, serif; font-size: 1.45rem; font-weight: 700; color: #1a1520; letter-spacing: -0.02em; }
+    .logo-name span { color: #7c5cbf; }
+    .logo-tagline { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: #b0a8ba; font-style: italic; margin-top: 1px; }
+    .header-nav { display: flex; align-items: center; gap: 0; height: 62px; }
+    .nav-item { position: relative; height: 62px; display: flex; align-items: center; }
+    .nav-link { display: flex; align-items: center; gap: 0.25rem; padding: 0 1rem; height: 62px; font-size: 0.78rem; letter-spacing: 0.05em; font-weight: 500; color: #4a4055; white-space: nowrap; transition: color 0.15s; cursor: pointer; border-bottom: 2px solid transparent; }
+    .nav-link:hover, .nav-link.active { color: #7c5cbf; border-bottom-color: #e8b84b; }
+    .nav-link .caret { font-size: 0.55rem; opacity: 0.6; margin-left: 1px; transition: transform 0.15s; }
+    .nav-item:hover .caret { transform: rotate(180deg); }
+    .dropdown { position: absolute; top: calc(100% + 1px); left: 0; background: #fff; border-radius: 6px; border: 1px solid #e0dbd4; box-shadow: 0 8px 28px rgba(0,0,0,0.12); min-width: 200px; opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity 0.15s, transform 0.15s; z-index: 600; overflow: hidden; }
+    .nav-item:hover > .dropdown { opacity: 1; pointer-events: all; transform: none; }
+    .dropdown a { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1.1rem; font-size: 0.83rem; color: #3d3647; border-bottom: 1px solid #f5f0ea; transition: background 0.1s, color 0.1s; }
+    .dropdown a:last-child { border-bottom: none; }
+    .dropdown a:hover { background: #7c5cbf; color: #fff; }
+    .nav-submit { background: #7c5cbf; color: #fff !important; border-radius: 4px; padding: 0.45rem 1.1rem !important; height: auto !important; border-bottom: none !important; font-weight: 600 !important; margin-left: 0.5rem; transition: background 0.15s !important; }
+    .nav-submit:hover { background: #5a3d96 !important; color: #fff !important; border-bottom: none !important; }
+    .header-search { display: flex; align-items: center; gap: 0.4rem; border: 1px solid #e0dbd4; border-radius: 18px; padding: 0.28rem 0.8rem; background: #f7f5f2; margin-right: 0.25rem; }
+    .header-search input { border: none; background: transparent; font-size: 0.8rem; width: 130px; outline: none; color: #1a1520; }
+    .header-search input::placeholder { color: #b8b3c2; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; cursor: pointer; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: #1a1520; }
+    .mobile-menu { display: none; flex-direction: column; background: #fff; border-bottom: 1px solid #e0dbd4; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { padding: 0.75rem 2rem; font-size: 0.88rem; border-bottom: 1px solid #f5f0ea; color: #1a1520; }
+    .mobile-menu a.sub { padding-left: 3rem; font-size: 0.82rem; color: #6b6478; }
+    .mobile-menu a:hover { background: #fffbf0; }
+    @media (max-width: 820px) { .hamburger { display: flex; } .header-nav, .header-search { display: none; } }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Indy<span>Philo</span></div>
+    <div class="login-sub">Officer Dashboard</div>
+    <label class="login-label" for="pw">Password</label>
+    <input type="password" id="pw" class="login-input" placeholder="Enter password..." onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="dash-header">
+    <div>
+      <div class="dash-logo">Indy<span>Philo</span></div>
+    </div>
+    <div class="dash-badge">Officer Dashboard</div>
+    <div class="logout-btn" onclick="doLogout()">Sign Out</div>
+  </div>
+
+  <div class="dash-wrap">
+    <div class="dash-grid">
+
+      <!-- LEFT: Review queue + published -->
+      <div>
+        <div class="dash-section-title">Review Queue</div>
+        <div id="queue-container"></div>
+
+        <div class="dash-section-title" style="margin-top:2rem;">Published Posts</div>
+        <div id="published-container"></div>
+      </div>
+
+      <!-- RIGHT: Stats + Feature control -->
+      <div>
+        <div class="dash-section-title">Overview</div>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="stat-num" id="stat-pending">0</div><div class="stat-label">Pending</div></div>
+          <div class="stat-box"><div class="stat-num" id="stat-published">0</div><div class="stat-label">Published</div></div>
+        </div>
+
+        <div class="featured-control">
+          <h3>Featured Post This Week</h3>
+          <p>Currently featured: <strong id="current-featured">Default</strong></p>
+          <p style="font-size:0.77rem;color:#a09898;">Click "Feature" next to any published post on the left to make it the featured post on the home page.</p>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e0dbd4;border-radius:3px;padding:1rem 1.1rem;">
+          <div style="font-size:0.64rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#7c5cbf;margin-bottom:0.6rem;padding-bottom:0.5rem;border-bottom:1px solid #e0dbd4;">Tips</div>
+          <ul style="font-size:0.8rem;color:#6b6478;line-height:1.8;padding-left:1rem;list-style:disc;">
+            <li>Review the post body before publishing</li>
+            <li>Feature the best post each week</li>
+            <li>Published posts appear on the site immediately</li>
+            <li>Rejected posts are removed from the queue</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = 'PhilosophyRocks!';
+
+function doLogin() {
+  const val = document.getElementById('pw').value;
+  if (val === PASSWORD) {
+    sessionStorage.setItem('ip_officer', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderDashboard();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pw').value = '';
+    document.getElementById('pw').focus();
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('ip_officer');
+  location.reload();
+}
+
+// Auto-login if session exists
+if (sessionStorage.getItem('ip_officer') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  setTimeout(renderDashboard, 0);
+}
+
+function getQueue() { try { return JSON.parse(localStorage.getItem('ip_queue')||'[]'); } catch(e){return[];} }
+function getPublished() { try { return JSON.parse(localStorage.getItem('ip_published')||'[]'); } catch(e){return[];} }
+function saveQueue(q) { localStorage.setItem('ip_queue', JSON.stringify(q)); }
+function savePublished(p) { localStorage.setItem('ip_published', JSON.stringify(p)); }
+function getFeatured() { return localStorage.getItem('ip_featured')||null; }
+function setFeatured(id) { localStorage.setItem('ip_featured', id); }
+
+function renderDashboard() {
+  const queue = getQueue().filter(p=>p.status==='pending');
+  const published = getPublished();
+  const featuredId = getFeatured();
+
+  // Stats
+  document.getElementById('stat-pending').textContent = queue.length;
+  document.getElementById('stat-published').textContent = published.length;
+
+  // Featured label
+  const featuredPost = published.find(p=>p.id===featuredId);
+  document.getElementById('current-featured').textContent = featuredPost ? featuredPost.title : 'Default (What Is Philosophy)';
+
+  // Queue
+  const qc = document.getElementById('queue-container');
+  if (queue.length === 0) {
+    qc.innerHTML = '<div class="queue-empty">No posts waiting for review. Check back later.</div>';
+  } else {
+    qc.innerHTML = queue.map(p => `
+      <div class="queue-item" id="qi-${p.id}">
+        <div class="qi-header">
+          <div>
+            <div class="qi-title">${p.title}</div>
+            <div class="qi-meta">By ${p.author} · ${p.tag} · ${p.readTime} min · Submitted ${new Date(p.submittedAt).toLocaleDateString()}</div>
+          </div>
+          <span class="qi-tag">${p.tag}</span>
+        </div>
+        <div class="qi-desc">${p.desc}</div>
+        <div class="qi-body">${p.body}</div>
+        <div class="qi-actions">
+          <button class="qi-publish" onclick="publishPost('${p.id}')">✓ Publish</button>
+          <button class="qi-reject" onclick="rejectPost('${p.id}')">✕ Reject</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // Published
+  const pc = document.getElementById('published-container');
+  if (published.length === 0) {
+    pc.innerHTML = '<div class="queue-empty" style="padding:1.5rem;">No user-submitted posts published yet.</div>';
+  } else {
+    pc.innerHTML = published.map(p => `
+      <div class="pub-item">
+        <div class="pub-item-info">
+          <div class="pub-item-title">${p.id===featuredId?'★ ':''} ${p.title}</div>
+          <div class="pub-item-meta">${p.author} · ${p.tag} · ${p.date}</div>
+        </div>
+        <div class="pub-item-actions">
+          <button class="btn-feature ${p.id===featuredId?'is-featured':''}" onclick="featurePost('${p.id}')">${p.id===featuredId?'★ Featured':'Feature'}</button>
+          <button class="btn-view" onclick="window.open('/post/?id=${p.id}','_blank')">View</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function publishPost(id) {
+  const queue = getQueue();
+  const post = queue.find(p=>p.id===id);
+  if (!post) return;
+  post.status = 'published';
+  const published = getPublished();
+  published.unshift(post);
+  savePublished(published);
+  saveQueue(queue.filter(p=>p.id!==id));
+  renderDashboard();
+}
+
+function rejectPost(id) {
+  if (!confirm('Remove this post from the queue?')) return;
+  saveQueue(getQueue().filter(p=>p.id!==id));
+  renderDashboard();
+}
+
+function featurePost(id) {
+  setFeatured(id);
+  renderDashboard();
+}
+</script>
+</body>
+</html>

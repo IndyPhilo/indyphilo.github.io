@@ -174,7 +174,7 @@
 </div>
 
 <script>
-const PASSWORD = 'PhilosophyRocks!';
+const PASSWORD = 'Philo';
 
 function doLogin() {
   const val = document.getElementById('pw').value;
@@ -196,11 +196,13 @@ function doLogout() {
 }
 
 // Auto-login if session exists
-if (sessionStorage.getItem('ip_officer') === '1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  setTimeout(renderDashboard, 0);
-}
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('ip_officer') === '1') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderDashboard();
+  }
+});
 
 function getQueue() { try { return JSON.parse(localStorage.getItem('ip_queue')||'[]'); } catch(e){return[];} }
 function getPublished() { try { return JSON.parse(localStorage.getItem('ip_published')||'[]'); } catch(e){return[];} }
@@ -258,7 +260,7 @@ function renderDashboard() {
         </div>
         <div class="pub-item-actions">
           <button class="btn-feature ${p.id===featuredId?'is-featured':''}" onclick="featurePost('${p.id}')">${p.id===featuredId?'★ Featured':'Feature'}</button>
-          <button class="btn-view" onclick="window.open('/post/?id=${p.id}','_blank')">View</button>
+          <button class="btn-view" onclick="window.open('https://indyphilo.srinestoranala.xyz/post/?id=${p.id}','_blank')
         </div>
       </div>`).join('');
   }
